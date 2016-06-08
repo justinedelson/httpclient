@@ -26,7 +26,7 @@
  */
 package org.apache.http.osgi.impl;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -44,12 +44,12 @@ public final class OSGiClientBuilderFactory implements HttpClientBuilderFactory 
 
     private final Map<String, ServiceRegistration> registeredConfigurations;
 
-    private final List<CloseableHttpClient> trackedHttpClients;
+    private final Collection<CloseableHttpClient> trackedHttpClients;
 
     public OSGiClientBuilderFactory(
             final BundleContext bundleContext,
             final Map<String, ServiceRegistration> registeredConfigurations,
-            final List<CloseableHttpClient> trackedHttpClients) {
+            final Collection<CloseableHttpClient> trackedHttpClients) {
         this.bundleContext = bundleContext;
         this.registeredConfigurations = registeredConfigurations;
         this.trackedHttpClients = trackedHttpClients;

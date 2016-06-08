@@ -28,12 +28,13 @@ package org.apache.http.osgi.impl;
 
 import java.io.Closeable;
 import java.io.IOException;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
+import java.util.WeakHashMap;
 
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.osgi.services.HttpClientBuilderFactory;
@@ -62,7 +63,11 @@ public final class HttpProxyConfigurationActivator implements BundleActivator, M
 
     private final Map<String, ServiceRegistration> registeredConfigurations = new LinkedHashMap<String, ServiceRegistration>();
 
-    private final List<CloseableHttpClient> trackedHttpClients = new LinkedList<CloseableHttpClient>();
+    private final Collection<CloseableHttpClient> trackedHttpClients;
+
+    public HttpProxyConfigurationActivator() {
+        trackedHttpClients = Collections.newSetFromMap(new WeakHashMap<CloseableHttpClient, Boolean>());
+    }
 
     /**
      * {@inheritDoc}

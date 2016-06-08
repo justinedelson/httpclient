@@ -26,7 +26,7 @@
  */
 package org.apache.http.osgi.impl;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -39,12 +39,12 @@ import org.osgi.framework.ServiceRegistration;
  */
 final class OSGiHttpClientBuilder extends HttpClientBuilder {
 
-    private final List<CloseableHttpClient> trackedHttpClients;
+    private final Collection<CloseableHttpClient> trackedHttpClients;
 
     public OSGiHttpClientBuilder(
             final BundleContext bundleContext,
             final Map<String, ServiceRegistration> registeredConfigurations,
-            final List<CloseableHttpClient> trackedHttpClients) {
+            final Collection<CloseableHttpClient> trackedHttpClients) {
         this.trackedHttpClients = trackedHttpClients;
         setDefaultCredentialsProvider(
                 new OSGiCredentialsProvider(bundleContext, registeredConfigurations));
@@ -55,7 +55,9 @@ final class OSGiHttpClientBuilder extends HttpClientBuilder {
     @Override
     public CloseableHttpClient build() {
         final CloseableHttpClient httpClient = super.build();
-        trackedHttpClients.add(httpClient);
+        synchronized (trackedHttpClients) {
+            trackedHttpClients.add(httpClient);
+        }
         return httpClient;
     }
 
